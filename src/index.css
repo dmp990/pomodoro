@@ -1,0 +1,24 @@
+:root {
+  color: rgba(255, 255, 255, 0.87);
+  background-color: #181818;
+  --shadow-color: 0deg 0% 1%;
+  --shadow-elevation-low: 0.5px 0.3px 0.7px hsl(var(--shadow-color) / 0.4),
+    0.8px 0.5px 1.1px -1.2px hsl(var(--shadow-color) / 0.4),
+    2.1px 1.3px 2.8px -2.5px hsl(var(--shadow-color) / 0.4);
+  --shadow-elevation-medium: 0.5px 0.3px 0.7px hsl(var(--shadow-color) / 0.42),
+    1.7px 1px 2.2px -0.8px hsl(var(--shadow-color) / 0.42),
+    4.3px 2.6px 5.7px -1.7px hsl(var(--shadow-color) / 0.42),
+    10.6px 6.4px 13.9px -2.5px hsl(var(--shadow-color) / 0.42);
+  --shadow-elevation-high: 0.5px 0.3px 0.7px hsl(var(--shadow-color) / 0.39),
+    3.2px 2px 4.2px -0.4px hsl(var(--shadow-color) / 0.39),
+    6.1px 3.7px 8px -0.7px hsl(var(--shadow-color) / 0.39),
+    10.1px 6.1px 13.3px -1.1px hsl(var(--shadow-color) / 0.39),
+    16.1px 9.8px 21.2px -1.4px hsl(var(--shadow-color) / 0.39),
+    25.2px 15.4px 33.2px -1.8px hsl(var(--shadow-color) / 0.39),
+    38.4px 23.4px 50.6px -2.1px hsl(var(--shadow-color) / 0.39),
+    56.6px 34.5px 74.6px -2.5px hsl(var(--shadow-color) / 0.39);
+}
+
+canvas {
+  min-height: 100vh;
+}
