@@ -1,43 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useSpring, a } from "@react-spring/three";
+import { OrbitControls } from "@react-three/drei";
 
-import Clock from "./Clock";
 import Minutes from "./components/Minutes/Minutes";
 import Seconds from "./components/Seconds/Seconds";
+import TomatoModel from "./components/TomatoModel/TomatoModel";
 
 import styles from "./App.module.css";
 
 import audioFile from "/service-bell-impatient-dinging-jam-fx-2-2-00-04.mp3";
 
 export const TimeLeftContext = React.createContext();
-
-function TomatoModel({ timeLeft }) {
-  const { scene } = useGLTF("/untitled.glb");
-
-  const [hovered, setHovered] = useState(false);
-  const [clicked, setClicked] = useState(false);
-
-  const meshRef = useRef();
-
-  const props = useSpring({
-    scale: clicked ? [1.7, 1.7, 1.7] : hovered ? [1.5, 1.5, 1.5] : [1, 1, 1],
-  });
-
-  return (
-    <a.mesh
-      ref={meshRef}
-      scale={props.scale}
-      onPointerOver={(event) => setHovered(true)}
-      onPointerOut={(event) => setHovered(false)}
-      onClick={(event) => setClicked(!clicked)}
-    >
-      <primitive object={scene} />
-      <Clock timeLeft={timeLeft} />
-    </a.mesh>
-  );
-}
 
 function App() {
   const [timeLeft, setTimeLeft] = useState(60 * 25); // 25 minutes
