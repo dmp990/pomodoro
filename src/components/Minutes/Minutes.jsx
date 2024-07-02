@@ -4,13 +4,18 @@ import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { useLoader, extend } from "@react-three/fiber";
 import { TextureLoader, SRGBColorSpace } from "three";
 
+import { TimeLeftContext } from "../../App";
+
 extend({ TextGeometry });
 
-export const Seconds = ({ timeLeft }) => {
+const Minutes = () => {
+  const timeLeft = React.useContext(TimeLeftContext);
+
   const font = useLoader(
     FontLoader,
     "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
   );
+
   const texture = useLoader(TextureLoader, "/8.png");
   texture.colorSpace = SRGBColorSpace;
 
@@ -27,12 +32,14 @@ export const Seconds = ({ timeLeft }) => {
   };
 
   return (
-    <mesh position={[1.2, 0, 1]}>
+    <mesh position={[-2, 0, 1]}>
       <textGeometry
         attach="geometry"
-        args={[(timeLeft % 60).toString(), textOptions]}
+        args={[Math.floor(timeLeft / 60).toString(), textOptions]}
       />
       <meshMatcapMaterial matcap={texture} />
     </mesh>
   );
 };
+
+export default Minutes;

@@ -4,12 +4,14 @@ import { OrbitControls, useGLTF } from "@react-three/drei";
 import { useSpring, a } from "@react-spring/three";
 
 import Clock from "./Clock";
+import Minutes from "./components/Minutes/Minutes";
+import Seconds from "./components/Seconds/Seconds";
 
 import styles from "./App.module.css";
 
 import audioFile from "/service-bell-impatient-dinging-jam-fx-2-2-00-04.mp3";
-import { Minutes } from "./Minutes";
-import { Seconds } from "./Seconds";
+
+export const TimeLeftContext = React.createContext();
 
 function TomatoModel({ timeLeft }) {
   const { scene } = useGLTF("/untitled.glb");
@@ -75,7 +77,7 @@ function App() {
   };
 
   return (
-    <>
+    <TimeLeftContext.Provider value={timeLeft}>
       <div className={styles.buttonsContainer}>
         <button
           onClick={isRunning ? pauseTimer : startTimer}
@@ -96,10 +98,10 @@ function App() {
         <directionalLight position={[0, 0, 5]} />
         <OrbitControls />
         <TomatoModel timeLeft={timeLeft} />
-        <Minutes timeLeft={timeLeft} />
-        <Seconds timeLeft={timeLeft} />
+        <Minutes />
+        <Seconds />
       </Canvas>
-    </>
+    </TimeLeftContext.Provider>
   );
 }
 
