@@ -1,41 +1,16 @@
 import React, { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
-import { OrbitControls, useGLTF } from "@react-three/drei";
-import { useSpring, a } from "@react-spring/three";
+import { OrbitControls } from "@react-three/drei";
 
-import Clock from "./Clock";
+import Minutes from "./components/Minutes/Minutes";
+import Seconds from "./components/Seconds/Seconds";
+import TomatoModel from "./components/TomatoModel/TomatoModel";
 
 import styles from "./App.module.css";
 
 import audioFile from "/service-bell-impatient-dinging-jam-fx-2-2-00-04.mp3";
-import { Minutes } from "./Minutes";
-import { Seconds } from "./Seconds";
 
-function TomatoModel({ timeLeft }) {
-  const { scene } = useGLTF("/untitled.glb");
-
-  const [hovered, setHovered] = useState(false);
-  const [clicked, setClicked] = useState(false);
-
-  const meshRef = useRef();
-
-  const props = useSpring({
-    scale: clicked ? [1.7, 1.7, 1.7] : hovered ? [1.5, 1.5, 1.5] : [1, 1, 1],
-  });
-
-  return (
-    <a.mesh
-      ref={meshRef}
-      scale={props.scale}
-      onPointerOver={(event) => setHovered(true)}
-      onPointerOut={(event) => setHovered(false)}
-      onClick={(event) => setClicked(!clicked)}
-    >
-      <primitive object={scene} />
-      <Clock timeLeft={timeLeft} />
-    </a.mesh>
-  );
-}
+export const TimeLeftContext = React.createContext();
 
 function App() {
   const [timeLeft, setTimeLeft] = useState(60 * 25); // 25 minutes
@@ -75,7 +50,7 @@ function App() {
   };
 
   return (
-    <>
+    <TimeLeftContext.Provider value={timeLeft}>
       <div className={styles.buttonsContainer}>
         <button
           onClick={isRunning ? pauseTimer : startTimer}
@@ -96,10 +71,10 @@ function App() {
         <directionalLight position={[0, 0, 5]} />
         <OrbitControls />
         <TomatoModel timeLeft={timeLeft} />
-        <Minutes timeLeft={timeLeft} />
-        <Seconds timeLeft={timeLeft} />
+        <Minutes />
+        <Seconds />
       </Canvas>
-    </>
+    </TimeLeftContext.Provider>
   );
 }
 
