@@ -33,7 +33,7 @@ const Seconds = () => {
     <mesh position={[1.2, 0, 1]}>
       <textGeometry
         attach="geometry"
-        args={[(timeLeft % 60).toString(), textOptions]}
+        args={[(timeLeft % 60).toString().padStart(2, "0"), textOptions]}
       />
       <meshMatcapMaterial matcap={texture} />
     </mesh>
