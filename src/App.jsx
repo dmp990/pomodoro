@@ -57,7 +57,7 @@ function App() {
   };
 
   const handleMinutesChange = (e) => {
-    const mins = Math.max(1, parseInt(e.target.value) || 1);
+    const mins = Math.min(60, Math.max(1, parseInt(e.target.value) || 1));
     setInputMinutes(mins);
     const secs = mins * 60;
     setInitialTime(secs);
@@ -76,6 +76,7 @@ function App() {
           <input
             type="number"
             min="1"
+            max="60"
             value={inputMinutes}
             onChange={handleMinutesChange}
             disabled={isRunning}

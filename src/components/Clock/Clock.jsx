@@ -29,12 +29,10 @@ const Clock = () => {
   React.useEffect(() => {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
-    const initialMinutes = Math.floor(initialTime / 60);
 
     if (minuteHandRef.current) {
-      const initialPos = (-5 * Math.PI) / 30;
-      minuteHandRef.current.rotation.z =
-        initialPos - ((initialMinutes - minutes) * Math.PI) / 30;
+      // Each minute = π/30 radians clockwise on a 60-min clock face
+      minuteHandRef.current.rotation.z = -(minutes * Math.PI) / 30;
     }
     if (secondHandRef.current) {
       const initialPos = Math.PI;
