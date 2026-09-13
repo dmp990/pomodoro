@@ -11,8 +11,11 @@ import styles from "./App.module.css";
 import audioFile from "/service-bell-impatient-dinging-jam-fx-2-2-00-04.mp3";
 
 export const TimeLeftContext = React.createContext();
+export const InitialTimeContext = React.createContext();
 
 function App() {
+  const [inputMinutes, setInputMinutes] = useState(25);
+  const [initialTime, setInitialTime] = useState(60 * 25);
   const [timeLeft, setTimeLeft] = useState(60 * 25); // 25 minutes
   const [isRunning, setIsRunning] = useState(false);
 
@@ -50,7 +53,16 @@ function App() {
 
   const resetTimer = () => {
     setIsRunning(false);
-    setTimeLeft(1500); // Reset to 25 minutes
+    setTimeLeft(initialTime);
+  };
+
+  const handleMinutesChange = (e) => {
+    const mins = Math.max(1, parseInt(e.target.value) || 1);
+    setInputMinutes(mins);
+    const secs = mins * 60;
+    setInitialTime(secs);
+    setTimeLeft(secs);
+    setIsRunning(false);
   };
 
   const jingleBell = () => {
@@ -58,31 +70,43 @@ function App() {
   };
 
   return (
-    <TimeLeftContext.Provider value={timeLeft}>
-      <div className={styles.buttonsContainer}>
-        <button
-          onClick={isRunning ? pauseTimer : startTimer}
-          className={styles.btn}
-        >
-          {isRunning ? "Pause" : "Start"}
-        </button>
-        <button onClick={resetTimer} className={styles.btn}>
-          Reset
-        </button>
-        <audio ref={audioRef} src={audioFile} />
-      </div>
+    <InitialTimeContext.Provider value={initialTime}>
+      <TimeLeftContext.Provider value={timeLeft}>
+        <div className={styles.buttonsContainer}>
+          <input
+            type="number"
+            min="1"
+            value={inputMinutes}
+            onChange={handleMinutesChange}
+            disabled={isRunning}
+            className={styles.btn}
+            style={{ width: "4rem" }}
+            title="Set duration in minutes"
+          />
+          <button
+            onClick={isRunning ? pauseTimer : startTimer}
+            className={styles.btn}
+          >
+            {isRunning ? "Pause" : "Start"}
+          </button>
+          <button onClick={resetTimer} className={styles.btn}>
+            Reset
+          </button>
+          <audio ref={audioRef} src={audioFile} />
+        </div>
 
-      {/*<div className={styles.minutesContainer}>{Math.floor(timeLeft / 60)}</div>*/}
-      {/*<div className={styles.secondsContainer}>{timeLeft % 60}</div>*/}
-      <Canvas>
-        <ambientLight intensity={0.1} />
-        <directionalLight position={[0, 0, 5]} />
-        <OrbitControls />
-        <TomatoModel timeLeft={timeLeft} />
-        <Minutes />
-        <Seconds />
-      </Canvas>
-    </TimeLeftContext.Provider>
+        {/*<div className={styles.minutesContainer}>{Math.floor(timeLeft / 60)}</div>*/}
+        {/*<div className={styles.secondsContainer}>{timeLeft % 60}</div>*/}
+        <Canvas>
+          <ambientLight intensity={0.1} />
+          <directionalLight position={[0, 0, 5]} />
+          <OrbitControls />
+          <TomatoModel timeLeft={timeLeft} />
+          <Minutes />
+          <Seconds />
+        </Canvas>
+      </TimeLeftContext.Provider>
+    </InitialTimeContext.Provider>
   );
 }
 

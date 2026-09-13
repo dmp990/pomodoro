@@ -1,5 +1,5 @@
 import React from "react";
-import { TimeLeftContext } from "../../App";
+import { TimeLeftContext, InitialTimeContext } from "../../App";
 
 function ClockFace() {
   return (
@@ -21,6 +21,7 @@ function ClockHand({ length, thickness, color }) {
 
 const Clock = () => {
   const timeLeft = React.useContext(TimeLeftContext);
+  const initialTime = React.useContext(InitialTimeContext);
 
   const minuteHandRef = React.useRef();
   const secondHandRef = React.useRef();
@@ -28,17 +29,18 @@ const Clock = () => {
   React.useEffect(() => {
     const minutes = Math.floor(timeLeft / 60);
     const seconds = timeLeft % 60;
+    const initialMinutes = Math.floor(initialTime / 60);
 
     if (minuteHandRef.current) {
       const initialPos = (-5 * Math.PI) / 30;
       minuteHandRef.current.rotation.z =
-        initialPos - ((25 - minutes) * Math.PI) / 30;
+        initialPos - ((initialMinutes - minutes) * Math.PI) / 30;
     }
     if (secondHandRef.current) {
       const initialPos = Math.PI;
       secondHandRef.current.rotation.z = initialPos + seconds * (Math.PI / 30);
     }
-  }, [timeLeft]);
+  }, [timeLeft, initialTime]);
 
   return (
     <group rotation={[Math.PI / 2, 0, 0]} position={[0, 0, 1]}>
