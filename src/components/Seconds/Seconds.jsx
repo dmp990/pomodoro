@@ -3,7 +3,7 @@ import { FontLoader } from "three/examples/jsm/loaders/FontLoader";
 import { TextGeometry } from "three/examples/jsm/geometries/TextGeometry";
 import { useLoader, extend } from "@react-three/fiber";
 import { TextureLoader, SRGBColorSpace } from "three";
-import { TimeLeftContext } from "../../App";
+import { TimeLeftContext } from "../../context/TimerContext";
 
 extend({ TextGeometry });
 

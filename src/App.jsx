@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
@@ -9,9 +9,7 @@ import TomatoModel from "./components/TomatoModel/TomatoModel";
 import styles from "./App.module.css";
 
 import audioFile from "/service-bell-impatient-dinging-jam-fx-2-2-00-04.mp3";
-
-export const TimeLeftContext = React.createContext();
-export const InitialTimeContext = React.createContext();
+import { TimeLeftContext, InitialTimeContext } from "./context/TimerContext";
 
 function App() {
   const [inputMinutes, setInputMinutes] = useState(25);
