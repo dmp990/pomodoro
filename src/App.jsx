@@ -32,6 +32,14 @@ function App() {
     return () => clearInterval(timer);
   }, [isRunning, timeLeft]);
 
+  useEffect(() => {
+    const minutes = Math.floor(timeLeft / 60)
+      .toString()
+      .padStart(2, "0");
+    const seconds = (timeLeft % 60).toString().padStart(2, "0");
+    document.title = `🍅 ${minutes}:${seconds} — Pomodoro`;
+  }, [timeLeft]);
+
   const startTimer = () => {
     setIsRunning(true);
   };
