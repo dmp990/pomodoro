@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
@@ -9,9 +9,7 @@ import TomatoModel from "./components/TomatoModel/TomatoModel";
 import styles from "./App.module.css";
 
 import audioFile from "/service-bell-impatient-dinging-jam-fx-2-2-00-04.mp3";
-
-export const TimeLeftContext = React.createContext();
-export const InitialTimeContext = React.createContext();
+import { TimeLeftContext, InitialTimeContext } from "./context/TimerContext";
 
 function App() {
   const [inputMinutes, setInputMinutes] = useState(25);
@@ -22,16 +20,18 @@ function App() {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    //console.log(`Running: ${isRunning}, timeLeft: ${timeLeft}`);
-    let timer;
-    if (isRunning && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1); // take 1 away
-      }, 1000);
-    } else if (timeLeft === 0) {
-      setIsRunning(false);
-      jingleBell();
-    }
+    if (!isRunning || timeLeft <= 0) return;
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          setIsRunning(false);
+          audioRef.current?.play();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
     return () => clearInterval(timer);
   }, [isRunning, timeLeft]);
 
@@ -63,10 +63,6 @@ function App() {
     setInitialTime(secs);
     setTimeLeft(secs);
     setIsRunning(false);
-  };
-
-  const jingleBell = () => {
-    audioRef.current.play();
   };
 
   return (

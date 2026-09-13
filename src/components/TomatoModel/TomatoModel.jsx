@@ -19,9 +19,9 @@ const TomatoModel = () => {
     <a.mesh
       ref={meshRef}
       scale={props.scale}
-      onPointerOver={(event) => setHovered(true)}
-      onPointerOut={(event) => setHovered(false)}
-      onClick={(event) => setClicked(!clicked)}
+      onPointerOver={(_event) => setHovered(true)}
+      onPointerOut={(_event) => setHovered(false)}
+      onClick={(_event) => setClicked(!clicked)}
     >
       <primitive object={scene} />
       <Clock />

@@ -1,5 +1,8 @@
 import React from "react";
-import { TimeLeftContext, InitialTimeContext } from "../../App";
+import {
+  TimeLeftContext,
+  InitialTimeContext,
+} from "../../context/TimerContext";
 
 function ClockFace() {
   return (
