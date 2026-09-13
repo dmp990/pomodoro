@@ -22,16 +22,18 @@ function App() {
   const audioRef = useRef(null);
 
   useEffect(() => {
-    //console.log(`Running: ${isRunning}, timeLeft: ${timeLeft}`);
-    let timer;
-    if (isRunning && timeLeft > 0) {
-      timer = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1); // take 1 away
-      }, 1000);
-    } else if (timeLeft === 0) {
-      setIsRunning(false);
-      jingleBell();
-    }
+    if (!isRunning || timeLeft <= 0) return;
+    const timer = setInterval(() => {
+      setTimeLeft((prevTime) => {
+        if (prevTime <= 1) {
+          clearInterval(timer);
+          setIsRunning(false);
+          audioRef.current?.play();
+          return 0;
+        }
+        return prevTime - 1;
+      });
+    }, 1000);
     return () => clearInterval(timer);
   }, [isRunning, timeLeft]);
 
@@ -63,10 +65,6 @@ function App() {
     setInitialTime(secs);
     setTimeLeft(secs);
     setIsRunning(false);
-  };
-
-  const jingleBell = () => {
-    audioRef.current.play();
   };
 
   return (
