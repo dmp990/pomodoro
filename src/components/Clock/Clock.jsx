@@ -31,8 +31,8 @@ const Clock = () => {
     const seconds = timeLeft % 60;
 
     if (minuteHandRef.current) {
-      // Each minute = π/30 radians clockwise on a 60-min clock face
-      minuteHandRef.current.rotation.z = -(minutes * Math.PI) / 30;
+      // Same coordinate system as second hand: π = 12 o'clock, positive = clockwise
+      minuteHandRef.current.rotation.z = Math.PI + minutes * (Math.PI / 30);
     }
     if (secondHandRef.current) {
       const initialPos = Math.PI;
