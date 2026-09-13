@@ -13,7 +13,7 @@ const Minutes = () => {
 
   const font = useLoader(
     FontLoader,
-    "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json"
+    "https://threejs.org/examples/fonts/helvetiker_regular.typeface.json",
   );
 
   const texture = useLoader(TextureLoader, "/8.png");
@@ -35,7 +35,12 @@ const Minutes = () => {
     <mesh position={[-2, 0, 1]}>
       <textGeometry
         attach="geometry"
-        args={[Math.floor(timeLeft / 60).toString().padStart(2, "0"), textOptions]}
+        args={[
+          Math.floor(timeLeft / 60)
+            .toString()
+            .padStart(2, "0"),
+          textOptions,
+        ]}
       />
       <meshMatcapMaterial matcap={texture} />
     </mesh>
