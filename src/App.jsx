@@ -18,22 +18,41 @@ function App() {
   const [isRunning, setIsRunning] = useState(false);
 
   const audioRef = useRef(null);
+  const targetEndTimeRef = useRef(null);
 
   useEffect(() => {
-    if (!isRunning || timeLeft <= 0) return;
-    const timer = setInterval(() => {
-      setTimeLeft((prevTime) => {
-        if (prevTime <= 1) {
-          clearInterval(timer);
-          setIsRunning(false);
-          audioRef.current?.play();
-          return 0;
-        }
-        return prevTime - 1;
-      });
-    }, 1000);
-    return () => clearInterval(timer);
-  }, [isRunning, timeLeft]);
+    if (!isRunning) return;
+
+    const tick = () => {
+      if (!targetEndTimeRef.current) return;
+      const remaining = Math.max(
+        0,
+        Math.ceil((targetEndTimeRef.current - Date.now()) / 1000),
+      );
+      setTimeLeft(remaining);
+
+      if (remaining <= 0) {
+        setIsRunning(false);
+        targetEndTimeRef.current = null;
+        audioRef.current?.play();
+      }
+    };
+
+    const timer = setInterval(tick, 500);
+
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        tick();
+      }
+    };
+
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(timer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isRunning]);
 
   useEffect(() => {
     const minutes = Math.floor(timeLeft / 60)
@@ -44,15 +63,19 @@ function App() {
   }, [timeLeft]);
 
   const startTimer = () => {
+    if (timeLeft <= 0) return;
+    targetEndTimeRef.current = Date.now() + timeLeft * 1000;
     setIsRunning(true);
   };
 
   const pauseTimer = () => {
     setIsRunning(false);
+    targetEndTimeRef.current = null;
   };
 
   const resetTimer = () => {
     setIsRunning(false);
+    targetEndTimeRef.current = null;
     setTimeLeft(initialTime);
   };
 
@@ -63,6 +86,7 @@ function App() {
     setInitialTime(secs);
     setTimeLeft(secs);
     setIsRunning(false);
+    targetEndTimeRef.current = null;
   };
 
   return (
