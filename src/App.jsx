@@ -1,4 +1,4 @@
-import { useRef, useState, useEffect } from "react";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 
@@ -28,9 +28,17 @@ function App() {
 
   const audioRef = useRef(null);
   const targetEndTimeRef = useRef(null);
+  const pendingStartTimeRef = useRef(null);
 
   useEffect(() => {
     if (!isRunning) return;
+
+    // Compute the target end time from the pending start
+    if (pendingStartTimeRef.current !== null) {
+      targetEndTimeRef.current =
+        Date.now() + pendingStartTimeRef.current * 1000;
+      pendingStartTimeRef.current = null;
+    }
 
     const tick = () => {
       if (!targetEndTimeRef.current) return;
@@ -44,6 +52,13 @@ function App() {
         setIsRunning(false);
         targetEndTimeRef.current = null;
         audioRef.current?.play();
+        // Browser notification (works even when tab is hidden)
+        if ("Notification" in window && Notification.permission === "granted") {
+          new Notification("🍅 Pomodoro Complete!", {
+            body: "Time's up — take a break!",
+            icon: "/tomato.png",
+          });
+        }
       }
     };
 
@@ -71,22 +86,30 @@ function App() {
     document.title = `🍅 ${minutes}:${seconds} — Pomodoro`;
   }, [timeLeft]);
 
-  const startTimer = () => {
-    if (timeLeft <= 0) return;
-    targetEndTimeRef.current = Date.now() + timeLeft * 1000;
-    setIsRunning(true);
-  };
+  // Request notification permission on first user interaction
+  const requestNotificationPermission = useCallback(() => {
+    if ("Notification" in window && Notification.permission === "default") {
+      Notification.requestPermission();
+    }
+  }, []);
 
-  const pauseTimer = () => {
+  const startTimer = useCallback(() => {
+    if (timeLeft <= 0) return;
+    requestNotificationPermission();
+    pendingStartTimeRef.current = timeLeft;
+    setIsRunning(true);
+  }, [timeLeft, requestNotificationPermission]);
+
+  const pauseTimer = useCallback(() => {
     setIsRunning(false);
     targetEndTimeRef.current = null;
-  };
+  }, []);
 
-  const resetTimer = () => {
+  const resetTimer = useCallback(() => {
     setIsRunning(false);
     targetEndTimeRef.current = null;
     setTimeLeft(initialTime);
-  };
+  }, [initialTime]);
 
   const handleMinutesChange = (e) => {
     const mins = Math.min(60, Math.max(1, parseInt(e.target.value) || 1));
@@ -110,6 +133,29 @@ function App() {
     setIsRunning(false);
     targetEndTimeRef.current = null;
   };
+
+  // Keyboard shortcuts: Space = start/pause, R = reset
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      const tag = document.activeElement?.tagName?.toLowerCase();
+      if (tag === "input" || tag === "textarea" || tag === "button") return;
+
+      if (e.code === "Space") {
+        e.preventDefault();
+        if (isRunning) {
+          pauseTimer();
+        } else {
+          startTimer();
+        }
+      } else if (e.code === "KeyR") {
+        e.preventDefault();
+        resetTimer();
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isRunning, startTimer, pauseTimer, resetTimer]);
 
   return (
     <InitialTimeContext.Provider value={initialTime}>
