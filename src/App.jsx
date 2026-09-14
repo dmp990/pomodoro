@@ -11,10 +11,18 @@ import styles from "./App.module.css";
 import audioFile from "/service-bell-impatient-dinging-jam-fx-2-2-00-04.mp3";
 import { TimeLeftContext, InitialTimeContext } from "./context/TimerContext";
 
+const DEFAULT_MINUTES = 25;
+
 function App() {
-  const [inputMinutes, setInputMinutes] = useState(25);
-  const [initialTime, setInitialTime] = useState(60 * 25);
-  const [timeLeft, setTimeLeft] = useState(60 * 25); // 25 minutes
+  const [inputMinutes, setInputMinutes] = useState(() => {
+    const saved = localStorage.getItem("pomodoro_default_minutes");
+    const parsed = parseInt(saved, 10);
+    return !isNaN(parsed) && parsed >= 1 && parsed <= 60
+      ? parsed
+      : DEFAULT_MINUTES;
+  });
+  const [initialTime, setInitialTime] = useState(() => inputMinutes * 60);
+  const [timeLeft, setTimeLeft] = useState(() => inputMinutes * 60);
   const [isRunning, setIsRunning] = useState(false);
 
   const audioRef = useRef(null);
@@ -82,6 +90,7 @@ function App() {
   const handleMinutesChange = (e) => {
     const mins = Math.min(60, Math.max(1, parseInt(e.target.value) || 1));
     setInputMinutes(mins);
+    localStorage.setItem("pomodoro_default_minutes", mins.toString());
     const secs = mins * 60;
     setInitialTime(secs);
     setTimeLeft(secs);
