@@ -44,3 +44,40 @@
   top: 49vh;
   left: 65vw;
 }
+
+.presetsContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  margin-top: 10px;
+  z-index: 100;
+}
+
+.presetBtn {
+  background-color: transparent;
+  font-family: "Quicksand", "Roboto", sans-serif;
+  font-weight: 700;
+  font-size: 1rem;
+  border: 2px solid #fe9a9a;
+  color: #fe9a9a;
+  padding: 4px 14px;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.presetBtn:hover {
+  background-color: #fe9a9a;
+  color: black;
+}
+
+.presetBtn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.presetBtnActive {
+  background-color: #fe9a9a;
+  color: black;
+}
