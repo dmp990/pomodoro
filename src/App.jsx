@@ -98,6 +98,18 @@ function App() {
     targetEndTimeRef.current = null;
   };
 
+  const PRESETS = [15, 25, 35, 45, 60];
+
+  const setPreset = (mins) => {
+    setInputMinutes(mins);
+    localStorage.setItem("pomodoro_default_minutes", mins.toString());
+    const secs = mins * 60;
+    setInitialTime(secs);
+    setTimeLeft(secs);
+    setIsRunning(false);
+    targetEndTimeRef.current = null;
+  };
+
   return (
     <InitialTimeContext.Provider value={initialTime}>
       <TimeLeftContext.Provider value={timeLeft}>
@@ -123,6 +135,18 @@ function App() {
             Reset
           </button>
           <audio ref={audioRef} src={audioFile} />
+        </div>
+        <div className={styles.presetsContainer}>
+          {PRESETS.map((mins) => (
+            <button
+              key={mins}
+              onClick={() => setPreset(mins)}
+              disabled={isRunning}
+              className={`${styles.presetBtn} ${inputMinutes === mins ? styles.presetBtnActive : ""}`}
+            >
+              {mins}m
+            </button>
+          ))}
         </div>
 
         {/*<div className={styles.minutesContainer}>{Math.floor(timeLeft / 60)}</div>*/}
