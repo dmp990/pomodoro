@@ -6,6 +6,7 @@ import Minutes from "./components/Minutes/Minutes";
 import Seconds from "./components/Seconds/Seconds";
 import TomatoModel from "./components/TomatoModel/TomatoModel";
 
+import { Analytics } from "@vercel/analytics/react";
 import styles from "./App.module.css";
 
 import audioFile from "/service-bell-impatient-dinging-jam-fx-2-2-00-04.mp3";
@@ -160,6 +161,7 @@ function App() {
           <Seconds />
         </Canvas>
       </TimeLeftContext.Provider>
+      <Analytics />
     </InitialTimeContext.Provider>
   );
 }
